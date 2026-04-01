@@ -1,3 +1,7 @@
+
+using Microsoft.EntityFrameworkCore;
+using PropertyManagementSystem.Infrastructure.Data;
+
 namespace PropertyManagementSystem
 {
     public class Program
@@ -5,6 +9,10 @@ namespace PropertyManagementSystem
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+           builder.Services.AddDbContext<ApplicationDbContext>(options =>
+               options.UseSqlServer(connectionString));
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
