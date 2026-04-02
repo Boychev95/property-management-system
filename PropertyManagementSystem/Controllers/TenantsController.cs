@@ -1,0 +1,112 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using PropertyManagementSystem.Core.Entities;
+using PropertyManagementSystem.Infrastructure.Data;
+
+namespace PropertyManagementSystem.Controllers
+{
+    public class TenantsController : Controller
+    {
+        private readonly ApplicationDbContext _context;
+
+        public TenantsController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var tenants = await _context.Tenants
+                .Include(t => t.Apartment)
+                .ThenInclude(a => a.Building)
+                .ToListAsync();
+
+            return View(tenants);
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var tenant = await _context.Tenants
+                .Include(t => t.Apartment)
+                .ThenInclude(a => a.Building)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (tenant == null)
+                return NotFound();
+
+            return View(tenant);
+        }
+
+        public IActionResult Create()
+        {
+            ViewBag.Apartments = _context.Apartments
+                .Include(a => a.Building)
+                .ToList();
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(Tenant tenant)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Apartments = _context.Apartments.ToList();
+                return View(tenant);
+            }
+
+            _context.Tenants.Add(tenant);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var tenant = await _context.Tenants.FindAsync(id);
+            if (tenant == null)
+                return NotFound();
+
+            ViewBag.Apartments = _context.Apartments.ToList();
+            return View(tenant);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(Tenant tenant)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Apartments = _context.Apartments.ToList();
+                return View(tenant);
+            }
+
+            _context.Tenants.Update(tenant);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var tenant = await _context.Tenants
+                .Include(t => t.Apartment)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (tenant == null)
+                return NotFound();
+
+            return View(tenant);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var tenant = await _context.Tenants.FindAsync(id);
+            if (tenant != null)
+            {
+                _context.Tenants.Remove(tenant);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+    }
+}
