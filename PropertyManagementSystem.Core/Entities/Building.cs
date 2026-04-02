@@ -3,9 +3,9 @@
     public class Building
     {
         public int Id { get; set; }
-        public string Name { get; set; } = null!;
-        public string Address { get; set; } = null!;
-        public int Floors { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public string Name { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
+
+        public ICollection<Apartment> Apartments { get; set; } = new List<Apartment>();
     }
 }
