@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using PropertyManagementSystem.Core.Entities;
 
 namespace PropertyManagementSystem.Infrastructure.Data
 {
-    public class ApplicationDbContext : DbContext  
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -11,5 +12,21 @@ namespace PropertyManagementSystem.Infrastructure.Data
         }
 
         public DbSet<Building> Buildings { get; set; } = null!;
+        public DbSet<Apartment> Apartments { get; set; } = null!;
+        public DbSet<Tenant> Tenants { get; set; } = null!;
+        public DbSet<Payment> Payments { get; set; } = null!;
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Building>(b =>
+            {
+                b.HasKey(x => x.Id);
+                b.Property(x => x.Name).IsRequired().HasMaxLength(200);
+                b.Property(x => x.Address).IsRequired().HasMaxLength(500);
+            });
+
+        }
     }
 }
