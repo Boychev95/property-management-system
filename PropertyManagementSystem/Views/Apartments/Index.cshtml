@@ -1,0 +1,37 @@
+﻿@model IEnumerable<PropertyManagementSystem.Core.Entities.Apartment>
+
+@{
+    ViewData["Title"] = "Apartments";
+}
+
+<h2 class="mb-3">Apartments</h2>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">Create New</a>
+</p>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Number</th>
+            <th>Floor</th>
+            <th>Building</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var a in Model)
+        {
+            <tr>
+                <td>@a.Number</td>
+                <td>@a.Floor</td>
+                <td>@a.Building?.Name</td>
+                <td>
+                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@a.Id">Details</a>
+                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@a.Id">Edit</a>
+                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@a.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
