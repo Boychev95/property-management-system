@@ -1,0 +1,32 @@
+﻿@model PropertyManagementSystem.Core.Entities.Building
+
+@{
+    ViewData["Title"] = "Edit Building";
+}
+
+<h2>Edit Building</h2>
+
+<form asp-action="Edit" method="post" class="mt-3">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Address" class="form-label"></label>
+        <input asp-for="Address" class="form-control" />
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Floors" class="form-label"></label>
+        <input asp-for="Floors" class="form-control" />
+        <span asp-validation-for="Floors" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-warning">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
