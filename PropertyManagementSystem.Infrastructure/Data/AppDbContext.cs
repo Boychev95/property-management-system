@@ -1,12 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using PropertyManagementSystem.Core.Entities;
 
 namespace PropertyManagementSystem.Infrastructure.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class AppDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
         {
         }
@@ -26,7 +25,6 @@ namespace PropertyManagementSystem.Infrastructure.Data
                 b.Property(x => x.Name).IsRequired().HasMaxLength(200);
                 b.Property(x => x.Address).IsRequired().HasMaxLength(500);
             });
-
         }
     }
 }
