@@ -5,50 +5,91 @@ using PropertyManagementSystem.Infrastructure.Data;
 
 namespace PropertyManagementSystem.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class BuildingsController : ControllerBase
+    public class BuildingsController : Controller
     {
-        private readonly AppDbContext _db;
-        public BuildingsController(AppDbContext db) => _db = db;
+        private readonly AppDbContext _context;
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll() => Ok(await _db.Buildings.AsNoTracking().ToListAsync());
-
-        [HttpGet("{id:int}")]
-        public async Task<IActionResult> Get(int id)
+        public BuildingsController(AppDbContext context)
         {
-            var building = await _db.Buildings.FindAsync(id);
-            return building is null ? NotFound() : Ok(building);
+            _context = context;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var buildings = await _context.Buildings.ToListAsync();
+            return View(buildings);
+        }
+
+        public IActionResult Create()
+        {
+            return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Building building)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Building building)
         {
-            _db.Buildings.Add(building);
-            await _db.SaveChangesAsync();
-            return CreatedAtAction(nameof(Get), new { id = building.Id }, building);
+            if (!ModelState.IsValid)
+                return View(building);
+
+            _context.Buildings.Add(building);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
-        [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(int id, [FromBody] Building updated)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id != updated.Id) return BadRequest();
-            var exists = await _db.Buildings.AnyAsync(b => b.Id == id);
-            if (!exists) return NotFound();
-            _db.Entry(updated).State = EntityState.Modified;
-            await _db.SaveChangesAsync();
-            return NoContent();
+            var building = await _context.Buildings.FindAsync(id);
+            if (building == null)
+                return NotFound();
+
+            return View(building);
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Building building)
+        {
+            if (id != building.Id)
+                return BadRequest();
+
+            if (!ModelState.IsValid)
+                return View(building);
+
+            _context.Update(building);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var building = await _context.Buildings.FindAsync(id);
+            if (building == null)
+                return NotFound();
+
+            return View(building);
+        }
+
         public async Task<IActionResult> Delete(int id)
         {
-            var building = await _db.Buildings.FindAsync(id);
-            if (building is null) return NotFound();
-            _db.Buildings.Remove(building);
-            await _db.SaveChangesAsync();
-            return NoContent();
+            var building = await _context.Buildings.FindAsync(id);
+            if (building == null)
+                return NotFound();
+
+            return View(building);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var building = await _context.Buildings.FindAsync(id);
+            if (building == null)
+                return NotFound();
+
+            _context.Buildings.Remove(building);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
     }
 }
