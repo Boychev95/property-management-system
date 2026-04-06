@@ -24,19 +24,6 @@ namespace PropertyManagementSystem.Controllers
             return View(tenants);
         }
 
-        public async Task<IActionResult> Details(int id)
-        {
-            var tenant = await _context.Tenants
-                .Include(t => t.Apartment)
-                .ThenInclude(a => a.Building)
-                .FirstOrDefaultAsync(t => t.Id == id);
-
-            if (tenant == null)
-                return NotFound();
-
-            return View(tenant);
-        }
-
         public IActionResult Create()
         {
             ViewBag.Apartments = _context.Apartments
@@ -47,11 +34,15 @@ namespace PropertyManagementSystem.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Tenant tenant)
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Apartments = _context.Apartments.ToList();
+                ViewBag.Apartments = _context.Apartments
+                    .Include(a => a.Building)
+                    .ToList();
+
                 return View(tenant);
             }
 
@@ -66,28 +57,52 @@ namespace PropertyManagementSystem.Controllers
             if (tenant == null)
                 return NotFound();
 
-            ViewBag.Apartments = _context.Apartments.ToList();
+            ViewBag.Apartments = _context.Apartments
+                .Include(a => a.Building)
+                .ToList();
+
             return View(tenant);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Tenant tenant)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Tenant tenant)
         {
+            if (id != tenant.Id)
+                return BadRequest();
+
             if (!ModelState.IsValid)
             {
-                ViewBag.Apartments = _context.Apartments.ToList();
+                ViewBag.Apartments = _context.Apartments
+                    .Include(a => a.Building)
+                    .ToList();
+
                 return View(tenant);
             }
 
-            _context.Tenants.Update(tenant);
+            _context.Update(tenant);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var tenant = await _context.Tenants
+                .Include(t => t.Apartment)
+                .ThenInclude(a => a.Building)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (tenant == null)
+                return NotFound();
+
+            return View(tenant);
         }
 
         public async Task<IActionResult> Delete(int id)
         {
             var tenant = await _context.Tenants
                 .Include(t => t.Apartment)
+                .ThenInclude(a => a.Building)
                 .FirstOrDefaultAsync(t => t.Id == id);
 
             if (tenant == null)
@@ -97,16 +112,5 @@ namespace PropertyManagementSystem.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var tenant = await _context.Tenants.FindAsync(id);
-            if (tenant != null)
-            {
-                _context.Tenants.Remove(tenant);
-                await _context.SaveChangesAsync();
-            }
-
-            return RedirectToAction(nameof(Index));
-        }
-    }
-}
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult>
