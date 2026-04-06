@@ -23,18 +23,6 @@ namespace PropertyManagementSystem.Controllers
             return View(apartments);
         }
 
-        public async Task<IActionResult> Details(int id)
-        {
-            var apartment = await _context.Apartments
-                .Include(a => a.Building)
-                .FirstOrDefaultAsync(a => a.Id == id);
-
-            if (apartment == null)
-                return NotFound();
-
-            return View(apartment);
-        }
-
         public IActionResult Create()
         {
             ViewBag.Buildings = _context.Buildings.ToList();
@@ -42,6 +30,7 @@ namespace PropertyManagementSystem.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Apartment apartment)
         {
             if (!ModelState.IsValid)
@@ -66,17 +55,33 @@ namespace PropertyManagementSystem.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Apartment apartment)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Apartment apartment)
         {
+            if (id != apartment.Id)
+                return BadRequest();
+
             if (!ModelState.IsValid)
             {
                 ViewBag.Buildings = _context.Buildings.ToList();
                 return View(apartment);
             }
 
-            _context.Apartments.Update(apartment);
+            _context.Update(apartment);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var apartment = await _context.Apartments
+                .Include(a => a.Building)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (apartment == null)
+                return NotFound();
+
+            return View(apartment);
         }
 
         public async Task<IActionResult> Delete(int id)
@@ -92,15 +97,15 @@ namespace PropertyManagementSystem.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var apartment = await _context.Apartments.FindAsync(id);
-            if (apartment != null)
-            {
-                _context.Apartments.Remove(apartment);
-                await _context.SaveChangesAsync();
-            }
+            if (apartment == null)
+                return NotFound();
 
+            _context.Apartments.Remove(apartment);
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
     }
