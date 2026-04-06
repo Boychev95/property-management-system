@@ -19,39 +19,33 @@ namespace PropertyManagementSystem.Controllers
             var payments = await _context.Payments
                 .Include(p => p.Tenant)
                 .ThenInclude(t => t.Apartment)
+                .ThenInclude(a => a.Building)
                 .ToListAsync();
 
             return View(payments);
-        }
-
-        public async Task<IActionResult> Details(int id)
-        {
-            var payment = await _context.Payments
-                .Include(p => p.Tenant)
-                .ThenInclude(t => t.Apartment)
-                .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (payment == null)
-                return NotFound();
-
-            return View(payment);
         }
 
         public IActionResult Create()
         {
             ViewBag.Tenants = _context.Tenants
                 .Include(t => t.Apartment)
+                .ThenInclude(a => a.Building)
                 .ToList();
 
             return View();
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Payment payment)
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Tenants = _context.Tenants.ToList();
+                ViewBag.Tenants = _context.Tenants
+                    .Include(t => t.Apartment)
+                    .ThenInclude(a => a.Building)
+                    .ToList();
+
                 return View(payment);
             }
 
@@ -66,28 +60,56 @@ namespace PropertyManagementSystem.Controllers
             if (payment == null)
                 return NotFound();
 
-            ViewBag.Tenants = _context.Tenants.ToList();
+            ViewBag.Tenants = _context.Tenants
+                .Include(t => t.Apartment)
+                .ThenInclude(a => a.Building)
+                .ToList();
+
             return View(payment);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Payment payment)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Payment payment)
         {
+            if (id != payment.Id)
+                return BadRequest();
+
             if (!ModelState.IsValid)
             {
-                ViewBag.Tenants = _context.Tenants.ToList();
+                ViewBag.Tenants = _context.Tenants
+                    .Include(t => t.Apartment)
+                    .ThenInclude(a => a.Building)
+                    .ToList();
+
                 return View(payment);
             }
 
-            _context.Payments.Update(payment);
+            _context.Update(payment);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var payment = await _context.Payments
+                .Include(p => p.Tenant)
+                .ThenInclude(t => t.Apartment)
+                .ThenInclude(a => a.Building)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (payment == null)
+                return NotFound();
+
+            return View(payment);
         }
 
         public async Task<IActionResult> Delete(int id)
         {
             var payment = await _context.Payments
                 .Include(p => p.Tenant)
+                .ThenInclude(t => t.Apartment)
+                .ThenInclude(a => a.Building)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (payment == null)
@@ -97,15 +119,15 @@ namespace PropertyManagementSystem.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var payment = await _context.Payments.FindAsync(id);
-            if (payment != null)
-            {
-                _context.Payments.Remove(payment);
-                await _context.SaveChangesAsync();
-            }
+            if (payment == null)
+                return NotFound();
 
+            _context.Payments.Remove(payment);
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
     }
