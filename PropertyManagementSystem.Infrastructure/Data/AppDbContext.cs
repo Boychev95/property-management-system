@@ -18,6 +18,10 @@ namespace PropertyManagementSystem.Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Payment>()
+        .Property(p => p.Amount)
+        .HasPrecision(18, 2);
+
 
             modelBuilder.Entity<Building>(b =>
             {
