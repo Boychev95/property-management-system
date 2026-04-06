@@ -1,0 +1,37 @@
+﻿@model IEnumerable<PropertyManagementSystem.Core.Entities.Payment>
+
+@{
+    ViewData["Title"] = "Payments";
+}
+
+<h2 class="mb-3">Payments</h2>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">Create New</a>
+</p>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Tenant</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.Tenant?.Name</td>
+                <td>@p.Amount</td>
+                <td>@p.Date.ToShortDateString()</td>
+                <td>
+                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@p.Id">Details</a>
+                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@p.Id">Edit</a>
+                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@p.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
