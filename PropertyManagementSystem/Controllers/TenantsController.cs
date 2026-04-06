@@ -113,4 +113,15 @@ namespace PropertyManagementSystem.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult>
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var tenant = await _context.Tenants.FindAsync(id);
+            if (tenant == null)
+                return NotFound();
+
+            _context.Tenants.Remove(tenant);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+    }
+}
