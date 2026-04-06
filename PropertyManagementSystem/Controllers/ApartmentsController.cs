@@ -7,9 +7,9 @@ namespace PropertyManagementSystem.Controllers
 {
     public class ApartmentsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly AppDbContext _context;
 
-        public ApartmentsController(ApplicationDbContext context)
+        public ApartmentsController(AppDbContext context)
         {
             _context = context;
         }

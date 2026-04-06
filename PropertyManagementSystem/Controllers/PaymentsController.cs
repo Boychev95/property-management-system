@@ -7,9 +7,9 @@ namespace PropertyManagementSystem.Controllers
 {
     public class PaymentsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly AppDbContext _context;
 
-        public PaymentsController(ApplicationDbContext context)
+        public PaymentsController(AppDbContext context)
         {
             _context = context;
         }

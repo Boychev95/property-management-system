@@ -9,8 +9,8 @@ namespace PropertyManagementSystem.Controllers
     [Route("api/[controller]")]
     public class BuildingsController : ControllerBase
     {
-        private readonly ApplicationDbContext _db;
-        public BuildingsController(ApplicationDbContext db) => _db = db;
+        private readonly AppDbContext _db;
+        public BuildingsController(AppDbContext db) => _db = db;
 
         [HttpGet]
         public async Task<IActionResult> GetAll() => Ok(await _db.Buildings.AsNoTracking().ToListAsync());
