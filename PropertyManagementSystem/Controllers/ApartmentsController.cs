@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PropertyManagementSystem.Core.Entities;
 using PropertyManagementSystem.Infrastructure.Data;
 
 namespace PropertyManagementSystem.Controllers
 {
+    [Authorize]
     public class ApartmentsController : Controller
     {
         private readonly AppDbContext _context;
