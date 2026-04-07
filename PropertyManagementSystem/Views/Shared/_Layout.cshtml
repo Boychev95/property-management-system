@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using PropertyManagementSystem.Core.Entities
 @inject UserManager<ApplicationUser> UserManager
-@inject RoleManager<IdentityRole> RoleManager
+@inject SignInManager<ApplicationUser> SignInManager
 
 <!DOCTYPE html>
 <html lang="en">
@@ -17,14 +17,16 @@
 <body class="light-theme">
     <div class="app-wrapper d-flex">
 
+        <!-- SIDEBAR -->
         <aside id="sidebar" class="app-sidebar">
+
             <div class="sidebar-header d-flex justify-content-between align-items-center">
                 <a asp-controller="Home" asp-action="Index" class="sidebar-brand text-white">
                     <i class="bi bi-grid-3x3-gap-fill me-2"></i>
                     <span>Property Management</span>
                 </a>
 
-                <button id="toggleSidebar" class="btn btn-sm btn-light">
+                <button id="toggleSidebar" class="btn btn-sm btn-light sidebar-icon-btn">
                     <i class="bi bi-layout-sidebar-inset"></i>
                 </button>
             </div>
@@ -39,9 +41,7 @@
                         </a>
                     </li>
 
-                    <li class="nav-item sidebar-section-title">
-                        Management
-                    </li>
+                    <li class="nav-item sidebar-section-title">Management</li>
 
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Buildings" asp-action="Index">
@@ -76,7 +76,7 @@
 
             <div class="sidebar-footer">
 
-                @if (User.Identity.IsAuthenticated)
+                @if (SignInManager.IsSignedIn(User))
                 {
                     var currentUser = await UserManager.GetUserAsync(User);
                     var fullName = currentUser?.FullName ?? "User";
@@ -85,16 +85,15 @@
 
                     string initials = "";
                     var parts = fullName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                    if (parts.Length == 1)
-                        initials = parts[0][0].ToString().ToUpper();
-                    else
-                        initials = (parts[0][0].ToString() + parts[^1][0].ToString()).ToUpper();
+                    initials = parts.Length == 1
+                    ? parts[0][0].ToString().ToUpper()
+                    : (parts[0][0].ToString() + parts[^1][0].ToString()).ToUpper();
 
-                    <div class="sidebar-user d-flex align-items-center mb-3 p-2">
+                    <!-- USER BLOCK -->
+                    <div class="sidebar-user d-flex align-items-center mb-2 p-2" id="userBlock">
                         <div class="sidebar-avatar me-2">@initials</div>
                         <div class="sidebar-user-info">
                             <div class="user-name">@fullName</div>
-
                             @if (isAdmin)
                             {
                                 <div class="admin-badge">ADMIN</div>
@@ -102,19 +101,45 @@
                         </div>
                     </div>
 
-                    <button id="themeToggle" class="btn btn-sm btn-light w-100 mb-2">
-                        <i class="bi bi-brightness-high"></i> Theme
+                    <!-- DROPDOWN INSIDE SIDEBAR -->
+                    <div class="user-dropdown" id="userDropdown">
+                        <a asp-controller="Account" asp-action="Profile">Profile</a>
+                        <a asp-controller="Account" asp-action="Settings">Settings</a>
+                        <form asp-controller="Account" asp-action="Logout" method="post">
+                            <button type="submit">Logout</button>
+                        </form>
+                    </div>
+
+                    <!-- THEME -->
+                    <button id="themeToggle" class="btn btn-sm btn-light w-100 mb-2 sidebar-icon-btn">
+                        <i class="bi bi-brightness-high"></i>
+                        <span>Theme</span>
                     </button>
 
+                    <!-- LOGOUT -->
                     <form asp-controller="Account" asp-action="Logout" method="post">
-                        <button type="submit" class="btn btn-sm w-100 logout-btn">
-                            <i class="bi bi-box-arrow-right"></i> Logout
+                        <button type="submit" class="btn btn-sm w-100 logout-btn sidebar-icon-btn">
+                            <i class="bi bi-power"></i>
+                            <span>Logout</span>
                         </button>
                     </form>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-sm btn-light w-100 mb-2 sidebar-icon-btn">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        <span>Login</span>
+                    </a>
+
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-sm btn-light w-100 sidebar-icon-btn">
+                        <i class="bi bi-person-plus"></i>
+                        <span>Register</span>
+                    </a>
                 }
             </div>
         </aside>
 
+        <!-- MAIN CONTENT -->
         <main class="app-main flex-grow-1">
             <header class="app-topbar d-flex align-items-center justify-content-between">
                 <div>@RenderSection("Breadcrumb", required: false)</div>

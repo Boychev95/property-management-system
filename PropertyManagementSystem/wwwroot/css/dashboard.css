@@ -1,27 +1,33 @@
-﻿/* Sidebar */
+﻿/* SIDEBAR */
 .app-sidebar {
     width: 260px;
     background-color: #0d6efd;
     color: white;
     padding: 15px;
     transition: width 0.3s;
+    animation: sidebarSlide 0.35s ease;
+    position: relative;
 }
 
     .app-sidebar.compact {
         width: 80px;
     }
 
+        /* HIDE TEXT IN COMPACT */
         .app-sidebar.compact .nav-link span,
         .app-sidebar.compact .sidebar-section-title,
         .app-sidebar.compact .sidebar-user-info,
-        .app-sidebar.compact .sidebar-brand span {
+        .app-sidebar.compact .sidebar-brand span,
+        .app-sidebar.compact .sidebar-icon-btn span {
             display: none;
         }
 
+        /* CENTER AVATAR IN COMPACT */
         .app-sidebar.compact .sidebar-avatar {
             margin: 0 auto;
         }
 
+/* NAV LINKS */
 .nav-link {
     color: white;
     padding: 10px;
@@ -38,10 +44,11 @@
         font-weight: bold;
     }
 
-/* User block */
+/* USER BLOCK */
 .sidebar-user {
     background-color: rgba(255,255,255,0.25);
     border-radius: 6px;
+    cursor: pointer;
 }
 
 .sidebar-avatar {
@@ -71,13 +78,57 @@
     margin-top: 2px;
 }
 
-/* Logout */
+/* DROPDOWN INSIDE SIDEBAR */
+.user-dropdown {
+    background: white;
+    color: black;
+    border-radius: 6px;
+    margin-top: 6px;
+    display: none;
+    overflow: hidden;
+    animation: fadeIn 0.25s ease;
+}
+
+    .user-dropdown a,
+    .user-dropdown button {
+        display: block;
+        width: 100%;
+        padding: 10px 15px;
+        text-align: left;
+        background: none;
+        border: none;
+        color: black;
+        font-size: 14px;
+    }
+
+        .user-dropdown a:hover,
+        .user-dropdown button:hover {
+            background: #f0f0f0;
+        }
+
+/* COMPACT MODE: DROPDOWN FLOATS OUTSIDE */
+.app-sidebar.compact .user-dropdown {
+    position: absolute;
+    left: 80px;
+    top: 0;
+    transform: translateY(50px);
+    width: 200px;
+    z-index: 9999;
+}
+
+/* BUTTONS */
+.sidebar-icon-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 .logout-btn {
     background: black;
     color: white;
 }
 
-/* Themes */
+/* THEMES */
 .light-theme {
     background: #f5f6fa;
     color: black;
@@ -88,9 +139,27 @@
     color: white;
 }
 
-    .dark-theme .dashboard-card,
-    .dark-theme .stat-box {
-        background: #2a2a2a;
-        color: white;
-        border-color: #444;
+/* ANIMATIONS */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
     }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes sidebarSlide {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
