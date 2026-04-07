@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using PropertyManagementSystem.Core.Entities
+@inject UserManager<ApplicationUser> UserManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -67,26 +71,31 @@
             </nav>
 
             <div class="sidebar-footer">
+
                 @if (User.Identity.IsAuthenticated)
                 {
-                    <div class="sidebar-user d-flex align-items-center">
+                    var currentUser = await UserManager.GetUserAsync(User);
+                    var displayName = currentUser?.FullName ?? "User";
+
+                    <div class="sidebar-user d-flex align-items-center mb-3">
                         <div class="sidebar-avatar">
                             <i class="bi bi-person-circle"></i>
                         </div>
                         <div class="sidebar-user-info">
-                            <div class="sidebar-user-name">@User.Identity.Name</div>
-                            <form asp-controller="Account" asp-action="Logout" method="post" class="mt-1">
-                                <button type="submit" class="btn btn-sm btn-outline-light w-100">
-                                    <i class="bi bi-box-arrow-right"></i> Logout
-                                </button>
-                            </form>
+                            <div class="text-white fw-semibold">@displayName</div>
                         </div>
                     </div>
+
+                    <form asp-controller="Account" asp-action="Logout" method="post">
+                        <button type="submit" class="btn btn-sm w-100 fw-semibold text-white" style="background-color: #000;">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </button>
+                    </form>
                 }
                 else
                 {
                     <div class="d-grid gap-2">
-                        <a class="btn btn-sm btn-outline-light" asp-controller="Account" asp-action="Login">
+                        <a class="btn btn-sm btn-outline-primary" asp-controller="Account" asp-action="Login">
                             <i class="bi bi-box-arrow-in-right"></i> Login
                         </a>
                         <a class="btn btn-sm btn-success" asp-controller="Account" asp-action="Register">
@@ -94,6 +103,7 @@
                         </a>
                     </div>
                 }
+
             </div>
         </aside>
 
