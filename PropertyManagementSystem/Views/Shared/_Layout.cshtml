@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using PropertyManagementSystem.Core.Entities
 @inject UserManager<ApplicationUser> UserManager
+@inject RoleManager<IdentityRole> RoleManager
 
 <!DOCTYPE html>
 <html lang="en">
@@ -11,18 +12,21 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/css/dashboard.css" />
 </head>
-<body>
+<body class="light-theme">
     <div class="app-wrapper d-flex">
 
-        <aside class="app-sidebar">
-            <div class="sidebar-header">
-                <a asp-controller="Home" asp-action="Index" class="sidebar-brand">
+        <aside id="sidebar" class="app-sidebar">
+            <div class="sidebar-header d-flex justify-content-between align-items-center">
+                <a asp-controller="Home" asp-action="Index" class="sidebar-brand text-white">
                     <i class="bi bi-grid-3x3-gap-fill me-2"></i>
                     <span>Property Management</span>
                 </a>
+
+                <button id="toggleSidebar" class="btn btn-sm btn-light">
+                    <i class="bi bi-layout-sidebar-inset"></i>
+                </button>
             </div>
 
             <nav class="sidebar-nav">
@@ -35,7 +39,7 @@
                         </a>
                     </li>
 
-                    <li class="nav-item mt-2 sidebar-section-title">
+                    <li class="nav-item sidebar-section-title">
                         Management
                     </li>
 
@@ -75,43 +79,45 @@
                 @if (User.Identity.IsAuthenticated)
                 {
                     var currentUser = await UserManager.GetUserAsync(User);
-                    var displayName = currentUser?.FullName ?? "User";
+                    var fullName = currentUser?.FullName ?? "User";
+                    var roles = await UserManager.GetRolesAsync(currentUser);
+                    bool isAdmin = roles.Contains("Admin");
 
-                    <div class="sidebar-user d-flex align-items-center mb-3">
-                        <div class="sidebar-avatar">
-                            <i class="bi bi-person-circle"></i>
-                        </div>
+                    string initials = "";
+                    var parts = fullName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    if (parts.Length == 1)
+                        initials = parts[0][0].ToString().ToUpper();
+                    else
+                        initials = (parts[0][0].ToString() + parts[^1][0].ToString()).ToUpper();
+
+                    <div class="sidebar-user d-flex align-items-center mb-3 p-2">
+                        <div class="sidebar-avatar me-2">@initials</div>
                         <div class="sidebar-user-info">
-                            <div class="text-white fw-semibold">@displayName</div>
+                            <div class="user-name">@fullName</div>
+
+                            @if (isAdmin)
+                            {
+                                <div class="admin-badge">ADMIN</div>
+                            }
                         </div>
                     </div>
 
+                    <button id="themeToggle" class="btn btn-sm btn-light w-100 mb-2">
+                        <i class="bi bi-brightness-high"></i> Theme
+                    </button>
+
                     <form asp-controller="Account" asp-action="Logout" method="post">
-                        <button type="submit" class="btn btn-sm w-100 fw-semibold text-white" style="background-color: #000;">
+                        <button type="submit" class="btn btn-sm w-100 logout-btn">
                             <i class="bi bi-box-arrow-right"></i> Logout
                         </button>
                     </form>
                 }
-                else
-                {
-                    <div class="d-grid gap-2">
-                        <a class="btn btn-sm btn-outline-primary" asp-controller="Account" asp-action="Login">
-                            <i class="bi bi-box-arrow-in-right"></i> Login
-                        </a>
-                        <a class="btn btn-sm btn-success" asp-controller="Account" asp-action="Register">
-                            <i class="bi bi-person-plus"></i> Register
-                        </a>
-                    </div>
-                }
-
             </div>
         </aside>
 
         <main class="app-main flex-grow-1">
             <header class="app-topbar d-flex align-items-center justify-content-between">
-                <div class="app-breadcrumb">
-                    @RenderSection("Breadcrumb", required: false)
-                </div>
+                <div>@RenderSection("Breadcrumb", required: false)</div>
             </header>
 
             <div class="app-content container-fluid py-4">
@@ -121,9 +127,7 @@
 
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="~/js/dashboard.js"></script>
     @RenderSection("Scripts", required: false)
-
 </body>
 </html>
