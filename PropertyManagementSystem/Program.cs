@@ -53,7 +53,13 @@ using (var scope = app.Services.CreateScope())
 
     if (adminUser == null)
     {
-        adminUser = new ApplicationUser { UserName = adminEmail, Email = adminEmail };
+        adminUser = new ApplicationUser
+        {
+            UserName = adminEmail,
+            Email = adminEmail,
+            FullName = "Administrator"
+        };
+
         await userManager.CreateAsync(adminUser, "Admin123!");
         await userManager.AddToRoleAsync(adminUser, "Admin");
     }
