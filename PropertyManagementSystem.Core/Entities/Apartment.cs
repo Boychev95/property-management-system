@@ -7,7 +7,7 @@
         public int Floor { get; set; }
 
         public int BuildingId { get; set; }
-        public Building Building { get; set; } = null!;
+        public Building? Building { get; set; }
 
         public ICollection<Tenant> Tenants { get; set; } = new List<Tenant>();
     }
