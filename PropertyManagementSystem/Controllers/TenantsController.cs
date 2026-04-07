@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PropertyManagementSystem.Core.Entities;
 using PropertyManagementSystem.Infrastructure.Data;
@@ -30,6 +31,11 @@ namespace PropertyManagementSystem.Controllers
         {
             ViewBag.Apartments = _context.Apartments
                 .Include(a => a.Building)
+                .Select(a => new SelectListItem
+                {
+                    Value = a.Id.ToString(),
+                    Text = $"{a.Building.Name} – Apt {a.Number}"
+                })
                 .ToList();
 
             return View();
@@ -43,6 +49,11 @@ namespace PropertyManagementSystem.Controllers
             {
                 ViewBag.Apartments = _context.Apartments
                     .Include(a => a.Building)
+                    .Select(a => new SelectListItem
+                    {
+                        Value = a.Id.ToString(),
+                        Text = $"{a.Building.Name} – Apt {a.Number}"
+                    })
                     .ToList();
 
                 return View(tenant);
@@ -61,6 +72,11 @@ namespace PropertyManagementSystem.Controllers
 
             ViewBag.Apartments = _context.Apartments
                 .Include(a => a.Building)
+                .Select(a => new SelectListItem
+                {
+                    Value = a.Id.ToString(),
+                    Text = $"{a.Building.Name} – Apt {a.Number}"
+                })
                 .ToList();
 
             return View(tenant);
@@ -77,6 +93,11 @@ namespace PropertyManagementSystem.Controllers
             {
                 ViewBag.Apartments = _context.Apartments
                     .Include(a => a.Building)
+                    .Select(a => new SelectListItem
+                    {
+                        Value = a.Id.ToString(),
+                        Text = $"{a.Building.Name} – Apt {a.Number}"
+                    })
                     .ToList();
 
                 return View(tenant);

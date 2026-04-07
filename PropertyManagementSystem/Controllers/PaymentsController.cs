@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PropertyManagementSystem.Core.Entities;
 using PropertyManagementSystem.Infrastructure.Data;
@@ -32,6 +33,11 @@ namespace PropertyManagementSystem.Controllers
             ViewBag.Tenants = _context.Tenants
                 .Include(t => t.Apartment)
                 .ThenInclude(a => a.Building)
+                .Select(t => new SelectListItem
+                {
+                    Value = t.Id.ToString(),
+                    Text = $"{t.Name} – {t.Apartment.Number} ({t.Apartment.Building.Name})"
+                })
                 .ToList();
 
             return View();
@@ -46,6 +52,11 @@ namespace PropertyManagementSystem.Controllers
                 ViewBag.Tenants = _context.Tenants
                     .Include(t => t.Apartment)
                     .ThenInclude(a => a.Building)
+                    .Select(t => new SelectListItem
+                    {
+                        Value = t.Id.ToString(),
+                        Text = $"{t.Name} – {t.Apartment.Number} ({t.Apartment.Building.Name})"
+                    })
                     .ToList();
 
                 return View(payment);
@@ -65,6 +76,11 @@ namespace PropertyManagementSystem.Controllers
             ViewBag.Tenants = _context.Tenants
                 .Include(t => t.Apartment)
                 .ThenInclude(a => a.Building)
+                .Select(t => new SelectListItem
+                {
+                    Value = t.Id.ToString(),
+                    Text = $"{t.Name} – {t.Apartment.Number} ({t.Apartment.Building.Name})"
+                })
                 .ToList();
 
             return View(payment);
@@ -82,6 +98,11 @@ namespace PropertyManagementSystem.Controllers
                 ViewBag.Tenants = _context.Tenants
                     .Include(t => t.Apartment)
                     .ThenInclude(a => a.Building)
+                    .Select(t => new SelectListItem
+                    {
+                        Value = t.Id.ToString(),
+                        Text = $"{t.Name} – {t.Apartment.Number} ({t.Apartment.Building.Name})"
+                    })
                     .ToList();
 
                 return View(payment);

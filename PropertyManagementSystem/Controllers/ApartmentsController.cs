@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PropertyManagementSystem.Core.Entities;
 using PropertyManagementSystem.Infrastructure.Data;
@@ -27,7 +28,7 @@ namespace PropertyManagementSystem.Controllers
 
         public IActionResult Create()
         {
-            ViewBag.Buildings = _context.Buildings.ToList();
+            ViewBag.Buildings = new SelectList(_context.Buildings, "Id", "Name");
             return View();
         }
 
@@ -37,7 +38,7 @@ namespace PropertyManagementSystem.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Buildings = _context.Buildings.ToList();
+                ViewBag.Buildings = new SelectList(_context.Buildings, "Id", "Name", apartment.BuildingId);
                 return View(apartment);
             }
 
@@ -52,7 +53,7 @@ namespace PropertyManagementSystem.Controllers
             if (apartment == null)
                 return NotFound();
 
-            ViewBag.Buildings = _context.Buildings.ToList();
+            ViewBag.Buildings = new SelectList(_context.Buildings, "Id", "Name", apartment.BuildingId);
             return View(apartment);
         }
 
@@ -65,7 +66,7 @@ namespace PropertyManagementSystem.Controllers
 
             if (!ModelState.IsValid)
             {
-                ViewBag.Buildings = _context.Buildings.ToList();
+                ViewBag.Buildings = new SelectList(_context.Buildings, "Id", "Name", apartment.BuildingId);
                 return View(apartment);
             }
 
