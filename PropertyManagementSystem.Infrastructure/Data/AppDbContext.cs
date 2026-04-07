@@ -24,12 +24,23 @@ namespace PropertyManagementSystem.Infrastructure.Data
                 .Property(p => p.Amount)
                 .HasPrecision(18, 2);
 
-            modelBuilder.Entity<Building>(b =>
-            {
-                b.HasKey(x => x.Id);
-                b.Property(x => x.Name).IsRequired().HasMaxLength(200);
-                b.Property(x => x.Address).IsRequired().HasMaxLength(500);
-            });
+            modelBuilder.Entity<Building>()
+                .HasMany(b => b.Apartments)
+                .WithOne(a => a.Building)
+                .HasForeignKey(a => a.BuildingId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Apartment>()
+                .HasMany(a => a.Tenants)
+                .WithOne(t => t.Apartment)
+                .HasForeignKey(t => t.ApartmentId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Tenant>()
+                .HasMany<Payment>()
+                .WithOne(p => p.Tenant)
+                .HasForeignKey(p => p.TenantId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
