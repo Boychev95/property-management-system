@@ -7,9 +7,12 @@
 <h2>Create Apartment</h2>
 
 <form asp-action="Create" method="post" class="mt-3">
+
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
     <div class="mb-3">
         <label asp-for="Number" class="form-label"></label>
-        <input asp-for="Number" class="form-control" />
+        <input asp-for="Number" class="form-control" type="text" />
         <span asp-validation-for="Number" class="text-danger"></span>
     </div>
 
@@ -21,7 +24,7 @@
 
     <div class="mb-3">
         <label asp-for="BuildingId" class="form-label">Building</label>
-        <select asp-for="BuildingId" class="form-control" asp-items="ViewBag.Buildings"></select>
+        <select asp-for="BuildingId" class="form-select" asp-items="ViewBag.Buildings"></select>
         <span asp-validation-for="BuildingId" class="text-danger"></span>
     </div>
 
