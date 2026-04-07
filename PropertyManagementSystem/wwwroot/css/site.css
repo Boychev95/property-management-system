@@ -1,22 +1,200 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    html {
+        font-size: 16px;
+    }
 }
 
 body {
-  margin-bottom: 60px;
+    margin: 0;
+    background: linear-gradient(135deg, #e8f0ff, #ffffff);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    min-height: 100vh;
+    overflow-x: hidden;
 }
+
+/* App wrapper */
+.app-wrapper {
+    min-height: 100vh;
+    display: flex;
+}
+
+/* Sidebar */
+.app-sidebar {
+    width: 240px;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-right: 1px solid rgba(255, 255, 255, 0.35);
+    padding: 20px 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.sidebar-header {
+    margin-bottom: 20px;
+}
+
+.sidebar-brand {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #0d6efd;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+    .sidebar-brand span {
+        white-space: nowrap;
+    }
+
+.sidebar-nav .nav-link {
+    color: #1a1a1a;
+    padding: 10px 12px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: 0.25s ease;
+    font-weight: 500;
+}
+
+    .sidebar-nav .nav-link:hover {
+        background: rgba(13, 110, 253, 0.15);
+        color: #0d6efd;
+        transform: translateX(4px);
+    }
+
+    .sidebar-nav .nav-link i {
+        font-size: 1.2rem;
+    }
+
+.sidebar-section-title {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    opacity: 0.6;
+    padding-left: 4px;
+}
+
+/* Sidebar footer */
+.sidebar-footer {
+    margin-top: 20px;
+}
+
+.sidebar-user {
+    gap: 12px;
+}
+
+.sidebar-avatar {
+    font-size: 2rem;
+    color: #0d6efd;
+}
+
+.sidebar-user-name {
+    font-weight: 600;
+}
+
+/* Main area */
+.app-main {
+    flex-grow: 1;
+    padding-left: 0;
+}
+
+/* Topbar */
+.app-topbar {
+    height: 60px;
+    padding: 0 25px;
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+/* Breadcrumbs */
+.app-breadcrumb {
+    font-size: 0.9rem;
+    opacity: 0.7;
+}
+
+/* Dashboard cards */
+.dashboard-card {
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-radius: 16px;
+    padding: 25px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    transition: 0.25s ease;
+}
+
+    .dashboard-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+    }
+
+    .dashboard-card i {
+        font-size: 2.5rem;
+        color: #0d6efd;
+        margin-bottom: 10px;
+    }
+
+/* Statistic counters */
+.stat-box {
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(18px);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    transition: 0.25s ease;
+}
+
+    .stat-box:hover {
+        transform: translateY(-4px);
+    }
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #0d6efd;
+}
+
+.stat-label {
+    opacity: 0.7;
+}
+
+/* Tables */
+.table {
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(14px);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+    .table thead {
+        background: rgba(13, 110, 253, 0.85);
+        color: white;
+    }
+
+    .table tbody tr:hover {
+        background: rgba(13, 110, 253, 0.08);
+    }
+
+/* Buttons */
+.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+    .btn-primary:hover {
+        background-color: #0b5ed7;
+        border-color: #0a58ca;
+    }
